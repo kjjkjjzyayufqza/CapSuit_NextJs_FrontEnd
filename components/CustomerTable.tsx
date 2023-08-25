@@ -4,7 +4,6 @@ import { ProTable } from "@ant-design/pro-components";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ConfigProvider } from "antd";
 import enUS from "antd/locale/en_US";
-import { StyleProvider } from "@ant-design/cssinjs";
 import { CustomerModel } from "@/model";
 import { getCustomers } from "@/api";
 import CustomerDetailDrawer from "./CustomerDetailDrawer";
@@ -17,35 +16,59 @@ function CustomerTable() {
       valueType: "indexBorder",
       width: 48,
     },
+
     {
-      title: "customerNumber",
-      dataIndex: "customerNumber",
-      copyable: true,
-      ellipsis: true,
+      title: "Contact LastName",
+      dataIndex: "contactLastName",
+      copyable: false,
+      ellipsis: false,
+      hideInTable: true,
     },
     {
-      title: "addressLine1",
+      title: "Contact FirstName",
+      dataIndex: "contactFirstName",
+      copyable: false,
+      ellipsis: false,
+      hideInTable: true,
+    },
+    {
+      title: "Customer Number",
+      dataIndex: "customerNumber",
+      copyable: false,
+      ellipsis: false,
+      hideInSearch: true,
+    },
+    {
+      title: "Customer Name",
+      dataIndex: "customerName",
+      copyable: false,
+      ellipsis: false,
+    },
+    {
+      title: "Address Line",
       dataIndex: "addressLine1",
       copyable: true,
       ellipsis: true,
+      hideInSearch: true,
+      render(dom, entity, index, action, schema) {
+        return (
+          <p>{entity.addressLine1 + " - " + (entity.addressLine2 ?? "")}</p>
+        );
+      },
     },
     {
-      title: "addressLine2",
-      dataIndex: "addressLine2",
-      copyable: true,
-      ellipsis: true,
-    },
-    {
-      title: "country",
+      title: "Country",
       dataIndex: "country",
       copyable: true,
       ellipsis: true,
+      hideInSearch: true,
     },
     {
-      title: "creditLimit",
+      title: "Credit Limit",
       dataIndex: "creditLimit",
       copyable: true,
       ellipsis: true,
+      hideInSearch: true,
     },
     {
       title: "Action",
@@ -53,7 +76,7 @@ function CustomerTable() {
       key: "option",
       width: 100,
       render: (_text, record, _, _action) => [
-        <CustomerDetailDrawer key={1} id={record.customerNumber} />,
+        <CustomerDetailDrawer key={0} id={record.customerNumber} />,
       ],
     },
   ];
@@ -67,49 +90,44 @@ function CustomerTable() {
 
   if (initialRenderComplete)
     return (
-      <div className="md:container md:mx-auto py-10">
+      <div className="">
         <ConfigProvider locale={enUS}>
-          <StyleProvider hashPriority="high">
-            <div className="">
-              <ProTable<CustomerModel>
-                columns={columns}
-                actionRef={actionRef}
-                cardBordered
-                request={async (_params, _sort, _filter) => {
-                  const response = await getCustomers({
-                    customerName:
-                      _params.customerName == ""
-                        ? undefined
-                        : _params.customerName,
-                    contactLastName:
-                      _params.contactLastName == ""
-                        ? undefined
-                        : _params.contactLastName,
-                    contactFirstName:
-                      _params.contactFirstName == ""
-                        ? undefined
-                        : _params.contactFirstName,
-                  });
-                  console.log(response.data.data);
-                  return {
-                    data: response.data.data,
-                  };
-                }}
-                rowKey="customerNumber"
-                pagination={{
-                  pageSize: 5,
-                }}
-                dateFormatter="string"
-                headerTitle={
-                  <div className="text-xl font-bold">Fake User List</div>
-                }
-                toolBarRender={() => []}
-                scroll={{
-                  x: "max-content",
-                }}
-              />
-            </div>
-          </StyleProvider>
+          <ProTable<CustomerModel>
+            columns={columns}
+            actionRef={actionRef}
+            cardBordered
+            request={async (_params, _sort, _filter) => {
+              const response = await getCustomers({
+                customerName:
+                  _params.customerName == "" ? undefined : _params.customerName,
+                contactLastName:
+                  _params.contactLastName == ""
+                    ? undefined
+                    : _params.contactLastName,
+                contactFirstName:
+                  _params.contactFirstName == ""
+                    ? undefined
+                    : _params.contactFirstName,
+              });
+              return {
+                data: response.data.data,
+              };
+            }}
+            rowKey="customerNumber"
+            pagination={{
+              pageSize: 10,
+            }}
+            dateFormatter="string"
+            headerTitle={
+              <div className="text-xl font-bold">Customers List</div>
+            }
+            scroll={{
+              x: "max-content",
+            }}
+            search={{
+              labelWidth: 150,
+            }}
+          />
         </ConfigProvider>
       </div>
     );

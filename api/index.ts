@@ -29,5 +29,5 @@ export function updateCustomerByNumber(
   id: string | number,
   data: updateCustomersData
 ): Promise<AxiosResponse<BaseResponse<CustomerModel>>> {
-  return api.get("updateCustomerByNumber/" + id, { data: data });
+  return api.put("updateCustomerByNumber/" + id, data);
 }

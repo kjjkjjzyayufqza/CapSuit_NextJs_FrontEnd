@@ -1,113 +1,131 @@
-'use client'
-import { FC, ReactNode, useState } from "react";
-import { Button, Col, Drawer, Row, Spin, Tag } from "antd";
-import { getCustomerByNumber } from "@/api";
-import { CustomerModel } from "@/model";
+"use client";
+import { FC, useState } from "react";
+import { Button, Form, message } from "antd";
+import { getCustomerByNumber, updateCustomerByNumber } from "@/api";
+import { CustomerModel, updateCustomersData } from "@/model";
+import {
+  DrawerForm,
+  ProForm,
+  ProFormText,
+} from "@ant-design/pro-components";
 
 const CustomerDetailDrawer: FC<{ id: string | number }> = ({ id }) => {
-  const [open, setOpen] = useState(false);
-  const [loadingData, setLoadingData] = useState<boolean>(false);
-  const [userData, setUserData] = useState<CustomerModel>();
+  const [form] = Form.useForm<CustomerModel>();
 
-  const showDrawer = () => {
-    setOpen(true);
-    setLoadingData(true);
-    getCustomerByNumber(id)
-      .then((res) => {
-        setUserData(res.data.data);
-        setLoadingData(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoadingData(false);
-      });
-  };
-
-  const onClose = () => {
-    setOpen(false);
-  };
 
   return (
     <>
-      <Button onClick={showDrawer}>View</Button>
-      <Drawer
-        title="User Detail"
-        placement="right"
-        onClose={onClose}
-        open={open}
-        width={600}
+      <DrawerForm<CustomerModel>
+        title="Customer Detail"
+        resize={{
+          maxWidth: window.innerWidth * 0.8,
+          minWidth: 600,
+        }}
+        form={form}
+        trigger={
+          <Button type="primary">
+            View
+          </Button>
+        }
+        autoFocusFirstInput
+        drawerProps={{
+          destroyOnClose: true,
+        }}
+        submitTimeout={2000}
+        request={async (params) => {
+          const response = await getCustomerByNumber(id);
+          const data: CustomerModel = response.data.data;
+          form.setFieldsValue(data)
+          return data;
+        }}
+        onFinish={async (values) => {
+          const updateValue: updateCustomersData = {
+            contactFirstName: values.contactFirstName,
+            contactLastName: values.contactLastName,
+            creditLimit: values.creditLimit,
+          };
+          updateCustomerByNumber(id, updateValue)
+            .then((res) => {
+              message.success("Update Successful");
+            })
+            .catch((err) => {
+              message.success("Update Fail");
+            });
+        }}
       >
-        <Spin tip="Loading..." spinning={loadingData}>
-          <Row gutter={[0, 16]}>
-            <CustomCol title={"Customer Name"} data={userData?.customerName} />
-            <CustomCol title={"Contact LastName"} data={userData?.customerName} />
-            <CustomCol title={"Contact FirstName"} data={userData?.customerName} />
-            <CustomCol title={"Phone"} data={userData?.phone} />
-
-            <CustomCol
-              title={"Address"}
-              data={[
-                <CustomCol
-                  key={0}
-                  title={""}
-                  data={userData?.addressLine1}
-                />,
-                <CustomCol
-                  key={1}
-                  title={""}
-                  data={userData?.addressLine2}
-                />,
-                <CustomCol
-                  key={2}
-                  title={"state"}
-                  data={userData?.state}
-                />,
-                <CustomCol
-                  key={3}
-                  title={"postalCode"}
-                  data={userData?.postalCode}
-                />,
-                <CustomCol
-                  key={4}
-                  title={"country"}
-                  data={userData?.country}
-                />,
-              ]}
-            />
-            <CustomCol
-              title={"salesRepEmployeeNumber"}
-              data={
-                <a href={`https://${userData?.customerName}`} target="_blank">
-                  {userData?.customerName}
-                </a>
-              }
-            />
-            <CustomCol
-              title={"creditLimit"}
-              data={<Tag color="orange">{userData?.customerName}</Tag>}
-            />
-          </Row>
-        </Spin>
-      </Drawer>
+        <ProForm.Group>
+          <ProFormText
+            name="customerNumber"
+            width="md"
+            label="CustomerNumber"
+            disabled
+          />
+          <ProFormText
+            name="Customer Name"
+            width="md"
+            label="CustomerName"
+            disabled
+          />
+          <ProFormText
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            width="md"
+            name="contactLastName"
+            label="Contact LastName"
+            placeholder="Please input the last name"
+          />
+          <ProFormText
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+            width="md"
+            name="contactFirstName"
+            label="Contact FirstName"
+            placeholder="Please input the first name"
+          />
+          <ProFormText name="phone" width="md" label="Phone" disabled />
+          <ProFormText
+            name="addressLine1"
+            width="md"
+            label="Address Line1"
+            disabled
+          />
+          <ProFormText
+            name="addressLine2"
+            width="md"
+            label="Address Line2"
+            disabled
+          />
+          <ProFormText name="city" width="md" label="City" disabled />
+          <ProFormText name="state" width="md" label="State" disabled />
+          <ProFormText
+            name="postalCode"
+            width="md"
+            label="Postal Code"
+            disabled
+          />
+          <ProFormText name="country" width="md" label="Country" disabled />
+          <ProFormText
+            name="salesRepEmployeeNumber"
+            width="md"
+            label="SalesRep Employee Number"
+            disabled
+          />
+          <ProFormText
+            name="creditLimit"
+            width="md"
+            label="CreditLimit"
+            disabled
+          />
+        </ProForm.Group>
+      </DrawerForm>
     </>
   );
 };
 
 export default CustomerDetailDrawer;
-
-const CustomCol: FC<{ title: ReactNode; data?: ReactNode }> = ({
-  title,
-  data,
-}) => {
-  if (!data) {
-    data = <></>;
-  }
-  return (
-    <>
-      <Col span={12} className="font-bold">
-        {title}:
-      </Col>
-      <Col span={12}>{data}</Col>
-    </>
-  );
-};
