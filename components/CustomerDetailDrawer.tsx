@@ -1,43 +1,41 @@
 "use client";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Button, Form, message } from "antd";
 import { getCustomerByNumber, updateCustomerByNumber } from "@/api";
 import { CustomerModel, updateCustomersData } from "@/model";
-import {
-  DrawerForm,
-  ProForm,
-  ProFormText,
-} from "@ant-design/pro-components";
+import { DrawerForm, ProForm, ProFormText } from "@ant-design/pro-components";
 
 const CustomerDetailDrawer: FC<{ id: string | number }> = ({ id }) => {
+  // Create the form ref for easy control
   const [form] = Form.useForm<CustomerModel>();
-
 
   return (
     <>
-      <DrawerForm<CustomerModel>
+      <DrawerForm<CustomerModel> // Set the form value type
         title="Customer Detail"
         resize={{
           maxWidth: window.innerWidth * 0.8,
           minWidth: 600,
         }}
-        form={form}
+        form={form} // Set the ref
         trigger={
-          <Button type="primary">
-            View
-          </Button>
+          // Which Button can open this drawer
+          <Button type="primary">View</Button>
         }
         autoFocusFirstInput
+        // When leave this drawer will auto destroy
         drawerProps={{
           destroyOnClose: true,
         }}
         submitTimeout={2000}
+        // Get data from server
         request={async (params) => {
           const response = await getCustomerByNumber(id);
           const data: CustomerModel = response.data.data;
-          form.setFieldsValue(data)
+          form.setFieldsValue(data);
           return data;
         }}
+        // When Update Button is Click
         onFinish={async (values) => {
           const updateValue: updateCustomersData = {
             contactFirstName: values.contactFirstName,
@@ -51,6 +49,13 @@ const CustomerDetailDrawer: FC<{ id: string | number }> = ({ id }) => {
             .catch((err) => {
               message.success("Update Fail");
             });
+        }}
+        // Re-Set the button text by api
+        submitter={{
+          searchConfig: {
+            resetText: "Cancel",
+            submitText: "Update",
+          },
         }}
       >
         <ProForm.Group>
