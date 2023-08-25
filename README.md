@@ -1,34 +1,35 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CapSuit React Frontend
 
-## Getting Started
+This code for **Interview Test**. The main functionality provides a front-end list interface that allows users to view data and filter it according to conditions.
 
-First, run the development server:
+# Detail
+
+This project mainly uses Next.js as the development framework, why not use other, mainly because I want to learn Next.js.
+
+## How to run
+```bash
+npm i
+```
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Main Frameworks
+	> Next.js
+    
+    > ProComponents 
+    (Quick and easy component creation)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Usage time
+    > About 2-3 hours.
+    (Learn, Develop, Debug, etc)
 
-## Learn More
+- ScreenShot
+<img alt="Train loss" src=".\gitImage\1.png" >
+<img alt="Train loss" src=".\gitImage\2.png" >
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+# All Source code repo
+<a href="https://github.com/kjjkjjzyayufqza/CapSuit_Python_BackEnd">BackEnd</a><br/>
+<a href="https://github.com/kjjkjjzyayufqza/CapSuit_NextJs_FrontEnd">FrontEnd</a>
