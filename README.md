@@ -15,7 +15,14 @@ npm i
 npm run dev
 ```
 
+# Folder structure
+- api - Storing various api files
+- app - Storing pages, e.g. tsx, css, etc.
+- components - Storing each component
+- model - Storage Interface
 
+
+# Other
 - Main Frameworks
 	> Next.js
     
